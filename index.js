@@ -1,20 +1,20 @@
-import { ChatOllama } from "@langchain/ollama";
+import { graph } from './graph/index.js';
 
-const model = new ChatOllama({
-  baseUrl: "http://localhost:11434",
-  model: "mistral"
+const stream = await graph.stream({
+  messages: [
+    {
+      role: "user",
+      content: "I've changed my mind and I want a refund for order #182818! Billing item.",
+    }
+  ]
+}, {
+  configurable: {
+    thread_id: "refund_testing_id",
+  }
 });
 
-async function main() {
-  try {
-    const result = await model.invoke(["Hello, how are you?"], {
-      temperature: 0.5,
-      stream: false
-    });
-    console.log('result is', result);
-  } catch (error) {
-    console.error('Error invoking model:', error);
-  }
+for await (const value of stream) {
+  console.log("---STEP---");
+  console.log(value);
+  console.log("---END STEP---");
 }
-
-main();
