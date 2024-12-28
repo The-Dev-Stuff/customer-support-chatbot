@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import llmModal from '../../llm/llm-model.js';
+import llmModal from '../../../../shared/llms/private-llm.js';
 
 export const initialSupport = async (state) => {
   const model = llmModal.getModel();
@@ -13,7 +13,10 @@ do not try to answer the question directly or gather information.
 Instead, immediately transfer them to the billing or technical team by asking the user to hold for a moment.
 Otherwise, just respond conversationally.`;
   const supportResponse = await model.invoke([
-    { role: "system", content: SYSTEM_TEMPLATE },
+    {
+      role: "system",
+      content: SYSTEM_TEMPLATE
+    },
     ...state.messages,
   ]);
 
@@ -27,10 +30,11 @@ Respond with a JSON object containing a single key called "nextRepresentative" w
 If they want to route the user to the billing team, respond only with the word "BILLING".
 If they want to route the user to the technical team, respond only with the word "TECHNICAL".
 Otherwise, respond only with the word "RESPOND".`;
-  const categorizationResponse = await model.invoke([{
-      role: "system",
-      content: CATEGORIZATION_SYSTEM_TEMPLATE,
-    },
+  const categorizationResponse = await model.invoke([
+      {
+        role: "system",
+        content: CATEGORIZATION_SYSTEM_TEMPLATE,
+      },
       ...state.messages,
       {
         role: "user",
@@ -49,5 +53,9 @@ Otherwise, respond only with the word "RESPOND".`;
 
   const categorizationOutput = JSON.parse(categorizationResponse.content);
   // Will append the response message to the current interaction state
-  return { messages: [supportResponse], nextRepresentative: categorizationOutput.nextRepresentative };
+
+  return {
+    messages: [supportResponse],
+    nextRepresentative: categorizationOutput.nextRepresentative
+  };
 };

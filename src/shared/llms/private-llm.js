@@ -1,11 +1,12 @@
-import { ChatOllama } from "@langchain/ollama";
+import { ChatOllama } from '@langchain/ollama';
 
 class ModelSingleton {
   constructor() {
     if (!ModelSingleton.instance) {
       this.model = new ChatOllama({
-        baseUrl: "http://localhost:11434",
-        model: "mistral"
+        baseUrl: process.env.LLM_MODEL_BASE_URL,
+        model: process.env.LLM_MODEL,
+        temperature: parseFloat(process.env.LLM_TEMPERATURE || 0)
       });
       ModelSingleton.instance = this;
     }

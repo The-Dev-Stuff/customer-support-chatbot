@@ -1,4 +1,4 @@
-import llmModal from '../../llm/llm-model.js';
+import llmModal from '../../../../shared/llms/private-llm.js';
 
 export const technicalSupport = async (state) => {
   const model = llmModal.getModel();

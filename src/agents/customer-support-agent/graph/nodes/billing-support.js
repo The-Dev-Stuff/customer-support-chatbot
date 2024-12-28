@@ -1,12 +1,11 @@
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import llmModal from '../../llm/llm-model.js';
+import llmModal from '../../../../shared/llms/private-llm.js';
 
 export const billingSupport = async (state) => {
   const model = llmModal.getModel();
   const SYSTEM_TEMPLATE =
     `You are an expert billing support specialist for LangCorp, a company that sells computers.
-Help the user to the best of your ability, but be concise in your responses.
 You have the ability to authorize refunds, which you can do by transferring the user to another agent who will collect the required information.
 If you do, assume the other agent has all necessary information about the customer and their order.
 You do not need to ask the user for more information.
@@ -27,8 +26,11 @@ Help the user to the best of your ability, but be concise in your responses.`;
     },
     ...trimmedHistory,
   ]);
+
   const CATEGORIZATION_SYSTEM_TEMPLATE =
     `Your job is to detect whether a billing support representative wants to refund the user.`;
+
+  // Here we pass the LLM's response as the user's response to the categorization model
   const CATEGORIZATION_HUMAN_TEMPLATE =
     `The following text is a response from a customer support representative.
 Extract whether they want to refund the user or not.
@@ -42,6 +44,7 @@ Here is the text:
 <text>
 ${billingRepResponse.content}
 </text>.`;
+
   const categorizationResponse = await model.invoke([
     {
       role: "system",
