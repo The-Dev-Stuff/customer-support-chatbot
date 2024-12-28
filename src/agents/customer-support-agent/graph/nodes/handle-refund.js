@@ -10,5 +10,6 @@ export const handleRefund = async (state) => {
       role: "assistant",
       content: "Refund processed!",
     },
+    finalState: true // Add this line to indicate the final state
   };
 };

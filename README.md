@@ -19,6 +19,6 @@ In order to use this project `as-is`:
 
 2. Run the index.js file
     ```bash
-    node index.js
+    npm start
     ```
 Thats it!
